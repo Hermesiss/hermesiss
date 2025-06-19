@@ -99,6 +99,4 @@ const hermesiss = {
 
 [![Hermesiss's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=Hermesiss&theme=tokyo-night&bg_color=0d1117&color=6A5ACD&line=6A5ACD&point=c9d1d9&area_color=6A5ACD&area=true)](https://github.com/ashutosh00710/github-readme-activity-graph)
 
-<img src="https://raw.githubusercontent.com/Platane/snk/output/github-contribution-grid-snake-dark.svg" alt="GitHub Contribution Snake" />
-
 </div>
