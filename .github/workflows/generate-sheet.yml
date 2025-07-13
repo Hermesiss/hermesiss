@@ -27,4 +27,4 @@ jobs:
           git add sheet.svg
           git commit -m "update sheet.svg" || exit 0
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git push origin HEAD:update-sheet
+          git push origin HEAD:update-sheet --force
