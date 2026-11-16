@@ -38,16 +38,23 @@ CELL = 11
 GAP = 3
 PAD = 16
 TOP = 28
-PLAY_EXTRA = 100
+PLAY_EXTRA = 110
+PROGRESS_H = 8
+PROGRESS_GAP = 10
 PADDLE_W = 72
 PADDLE_H = 8
 BALL_R = 5
 DT = 1 / 60
 SUBSTEPS = 3
 SAMPLE_FPS = 12
-MAX_SECONDS = 90.0
-BALL_SPEED = 220.0
-PADDLE_SPEED = 400.0
+# Simulate until clear (or this ceiling), then time-compress into TARGET_SECONDS.
+MAX_SIM_SECONDS = 180.0
+TARGET_SECONDS = 55.0  # gameplay; CTA hold added after
+CTA_HOLD_SECONDS = 5.0
+BALL_SPEED = 300.0
+PADDLE_SPEED = 560.0
+SPEED_RAMP_EVERY = 12  # bricks destroyed
+SPEED_RAMP_FACTOR = 1.06
 # SVG teaser: 1 HP keeps the loop short; colors still encode contribution level.
 # Interactive multi-hit lives in gh-arkanoid.
 SVG_ONE_HIT = True
@@ -109,6 +116,8 @@ class SimResult:
     width: float
     height: float
     paddle_y: float
+    progress_y: float
+    total_bricks: int
 
 
 def parse_args() -> argparse.Namespace:
@@ -368,13 +377,20 @@ def paddle_launch(
 
 def simulate(bricks: list[Brick], width: float, grid_h: float) -> SimResult:
     height = grid_h + PLAY_EXTRA
-    paddle_y = height - PAD - PADDLE_H - 18
-    floor_y = height - PAD
+    progress_y = height - PAD - PROGRESS_H
+    paddle_y = progress_y - PROGRESS_GAP - PADDLE_H
+    floor_y = paddle_y + PADDLE_H + 4
+
+    total_bricks = sum(1 for b in bricks if b.alive)
+    ball_speed = BALL_SPEED
+    paddle_speed = PADDLE_SPEED
+    destroyed = 0
+    next_ramp_at = SPEED_RAMP_EVERY
 
     paddle_x = width / 2 - PADDLE_W / 2
     ball_x = width / 2
     ball_y = paddle_y - BALL_R - 2
-    vx, vy, paddle_x = paddle_launch(ball_x, ball_y, bricks, BALL_SPEED, width)
+    vx, vy, paddle_x = paddle_launch(ball_x, ball_y, bricks, ball_speed, width)
 
     ball_samples: list[tuple[float, float, float]] = [(0.0, ball_x, ball_y)]
     paddle_samples: list[tuple[float, float]] = [(0.0, paddle_x)]
@@ -382,14 +398,13 @@ def simulate(bricks: list[Brick], width: float, grid_h: float) -> SimResult:
     next_sample = sample_every
 
     t = 0.0
-    alive_count = sum(1 for b in bricks if b.alive)
+    alive_count = total_bricks
 
-    while t < MAX_SECONDS and alive_count > 0:
+    while t < MAX_SIM_SECONDS and alive_count > 0:
         # Only chase the ball to catch it — aim happens on contact
         if vy > 0:
             eta = max(0.0, (paddle_y - ball_y) / max(vy, 1e-6))
             intercept_x = ball_x + vx * eta
-            # reflect once off side walls for better intercept
             if intercept_x < 0:
                 intercept_x = -intercept_x
             elif intercept_x > width:
@@ -399,7 +414,7 @@ def simulate(bricks: list[Brick], width: float, grid_h: float) -> SimResult:
         else:
             want = ball_x - PADDLE_W / 2
         dx = want - paddle_x
-        max_step = PADDLE_SPEED * DT
+        max_step = paddle_speed * DT
         if dx:
             paddle_x += math.copysign(min(abs(dx), max_step), dx)
         paddle_x = max(0.0, min(width - PADDLE_W, paddle_x))
@@ -422,14 +437,14 @@ def simulate(bricks: list[Brick], width: float, grid_h: float) -> SimResult:
 
             if ball_y + BALL_R > floor_y:
                 ball_y = paddle_y - BALL_R
-                speed = max(math.hypot(vx, vy), BALL_SPEED)
+                speed = max(math.hypot(vx, vy), ball_speed)
                 vx, vy, paddle_x = paddle_launch(ball_x, ball_y, bricks, speed, width)
                 hit_this_frame = True
                 break
 
             if vy > 0 and collide_side(ball_x, ball_y, BALL_R, paddle_x, paddle_y, PADDLE_W, PADDLE_H):
                 ball_y = paddle_y - BALL_R - 1
-                speed = max(math.hypot(vx, vy), BALL_SPEED)
+                speed = max(math.hypot(vx, vy), ball_speed)
                 vx, vy, paddle_x = paddle_launch(ball_x, ball_y, bricks, speed, width)
                 hit_this_frame = True
                 break
@@ -440,7 +455,6 @@ def simulate(bricks: list[Brick], width: float, grid_h: float) -> SimResult:
                 side = collide_side(ball_x, ball_y, BALL_R, b.x, b.y, b.w, b.h)
                 if not side:
                     continue
-                # Normal geometric bounce only — no mid-air retarget
                 if side == "left":
                     ball_x = b.x - BALL_R - 0.5
                     vx = -abs(vx)
@@ -460,6 +474,11 @@ def simulate(bricks: list[Brick], width: float, grid_h: float) -> SimResult:
                     b.alive = False
                     b.destroy_t = t
                     alive_count -= 1
+                    destroyed += 1
+                    while destroyed >= next_ramp_at:
+                        ball_speed *= SPEED_RAMP_FACTOR
+                        paddle_speed *= SPEED_RAMP_FACTOR
+                        next_ramp_at += SPEED_RAMP_EVERY
                 hit_this_frame = True
                 break
             if hit_this_frame:
@@ -475,11 +494,11 @@ def simulate(bricks: list[Brick], width: float, grid_h: float) -> SimResult:
         ball_samples.append((t, ball_x, ball_y))
         paddle_samples.append((t, paddle_x))
 
-    duration = min(max(t, 1.0) + 0.8, MAX_SECONDS + 0.8)
+    duration = max(t, 1.0) + 0.6
     ball_samples.append((duration, ball_samples[-1][1], ball_samples[-1][2]))
     paddle_samples.append((duration, paddle_samples[-1][1]))
 
-    return SimResult(
+    sim = SimResult(
         bricks=bricks,
         ball_samples=ball_samples,
         paddle_samples=paddle_samples,
@@ -489,7 +508,39 @@ def simulate(bricks: list[Brick], width: float, grid_h: float) -> SimResult:
         width=width,
         height=height,
         paddle_y=paddle_y,
+        progress_y=progress_y,
+        total_bricks=total_bricks,
     )
+    sim = compress_sim_duration(sim, TARGET_SECONDS)
+    return append_cta_hold(sim, CTA_HOLD_SECONDS)
+
+
+def compress_sim_duration(sim: SimResult, target: float) -> SimResult:
+    """Time-lapse so the full clear fits in `target` seconds."""
+    if sim.duration <= target or sim.duration <= 0:
+        return sim
+    scale = target / sim.duration
+    for b in sim.bricks:
+        if b.destroy_t is not None:
+            b.destroy_t *= scale
+        b.hit_times = [ht * scale for ht in b.hit_times]
+    sim.ball_samples = [(t * scale, x, y) for t, x, y in sim.ball_samples]
+    sim.paddle_samples = [(t * scale, x) for t, x in sim.paddle_samples]
+    sim.duration = target
+    return sim
+
+
+def append_cta_hold(sim: SimResult, hold: float) -> SimResult:
+    """Freeze last pose for a few seconds while the end CTA is shown."""
+    if hold <= 0:
+        return sim
+    end = sim.duration + hold
+    bx, by = sim.ball_samples[-1][1], sim.ball_samples[-1][2]
+    px = sim.paddle_samples[-1][1]
+    sim.ball_samples.append((end, bx, by))
+    sim.paddle_samples.append((end, px))
+    sim.duration = end
+    return sim
 
 
 def _anim_values(times: list[float], values: list[float], duration: float) -> tuple[str, str, str]:
@@ -542,7 +593,7 @@ def _brick_fill_anim(b: Brick, dur: float) -> str:
         parts.append(
             f'<animate attributeName="fill" values="{";".join(colors)}" '
             f'keyTimes="{";".join(kt_parts)}" dur="{dur:.3f}s" '
-            f'repeatCount="indefinite" calcMode="discrete"/>'
+            f'fill="freeze" calcMode="discrete"/>'
         )
 
     if b.destroy_t is None:
@@ -553,9 +604,17 @@ def _brick_fill_anim(b: Brick, dur: float) -> str:
     parts.append(
         f'<animate attributeName="opacity" values="1;1;0;0" '
         f'keyTimes="0;{t0:.4f};{t1:.4f};1" dur="{dur:.3f}s" '
-        f'repeatCount="indefinite" calcMode="linear"/>'
+        f'fill="freeze" calcMode="linear"/>'
     )
     return "".join(parts)
+
+
+def _cta_fade(begin_s: float, fade_s: float = 0.45) -> str:
+    """Per-element opacity fade — <g opacity> often fails when SVG is shown as <img>."""
+    return (
+        f'<animate attributeName="opacity" from="0" to="1" '
+        f'begin="{begin_s:.3f}s" dur="{fade_s:.3f}s" fill="freeze"/>'
+    )
 
 
 def emit_svg(sim: SimResult, login: str) -> str:
@@ -566,21 +625,29 @@ def emit_svg(sim: SimResult, login: str) -> str:
     _, b_vy, _ = _anim_values(list(bt), list(by), dur)
     p_kt, p_vx, p_dur = _anim_values(list(pt), list(px), dur)
     play = PLAY_URL.format(login=login.lower())
+    bar_w = sim.width - PAD * 2
+    # Linear time progress over the whole clip (incl. CTA hold)
+    pr_kt, pr_vw, pr_dur = _anim_values([0.0, dur], [0.0, bar_w], dur)
+
+    w, h = sim.width, sim.height
+    cta_begin = max(0.0, dur - CTA_HOLD_SECONDS)
+    cx, cy = w / 2, h / 2
+    btn_w, btn_h = min(300.0, w - 40), 72.0
+    btn_x, btn_y = cx - btn_w / 2, cy - btn_h / 2
+    font = "system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif"
 
     lines: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
-        f'width="{sim.width:.0f}" height="{sim.height:.0f}" '
-        f'viewBox="0 0 {sim.width:.0f} {sim.height:.0f}" role="img" '
+        f'width="{w:.0f}" height="{h:.0f}" '
+        f'viewBox="0 0 {w:.0f} {h:.0f}" role="img" '
         f'aria-label="Contribution Arkanoid for {login}">',
         f"<title>Contribution Arkanoid — @{login} (click to play)</title>",
         f'<a href="{play}" target="_blank" rel="noopener noreferrer">',
-        f'<rect width="100%" height="100%" fill="{BG}"/>',
+        f'<rect width="{w:.0f}" height="{h:.0f}" fill="{BG}"/>',
         f'<text x="{PAD}" y="18" fill="{TEXT_COLOR}" font-size="12" '
-        f'font-family="system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif">'
-        f"@{login}</text>",
-        f'<text x="{sim.width - PAD}" y="18" fill="{ACCENT}" font-size="11" text-anchor="end" '
-        f'font-family="system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif">'
-        f"play ↗</text>",
+        f'font-family="{font}">@{login}</text>',
+        f'<text x="{w - PAD}" y="18" fill="{ACCENT}" font-size="11" text-anchor="end" '
+        f'font-family="{font}">play ↗</text>',
     ]
 
     for b in sim.bricks:
@@ -597,20 +664,57 @@ def emit_svg(sim: SimResult, login: str) -> str:
     )
     lines.append(
         f'<animate attributeName="x" values="{p_vx}" keyTimes="{p_kt}" '
-        f'dur="{p_dur}" repeatCount="indefinite" calcMode="linear"/>'
+        f'dur="{p_dur}" fill="freeze" calcMode="linear"/>'
     )
     lines.append("</rect>")
 
     lines.append(f'<circle cx="{bx[0]:.2f}" cy="{by[0]:.2f}" r="{BALL_R}" fill="{BALL_COLOR}">')
     lines.append(
         f'<animate attributeName="cx" values="{b_vx}" keyTimes="{b_kt}" '
-        f'dur="{b_dur}" repeatCount="indefinite" calcMode="linear"/>'
+        f'dur="{b_dur}" fill="freeze" calcMode="linear"/>'
     )
     lines.append(
         f'<animate attributeName="cy" values="{b_vy}" keyTimes="{b_kt}" '
-        f'dur="{b_dur}" repeatCount="indefinite" calcMode="linear"/>'
+        f'dur="{b_dur}" fill="freeze" calcMode="linear"/>'
     )
     lines.append("</circle>")
+
+    # Progress bar — linear clock, not brick hits
+    lines.append(
+        f'<rect x="{PAD}" y="{sim.progress_y:.1f}" width="{bar_w:.1f}" height="{PROGRESS_H}" '
+        f'rx="3" fill="#21262d"/>'
+    )
+    lines.append(
+        f'<rect x="{PAD}" y="{sim.progress_y:.1f}" width="0" height="{PROGRESS_H}" '
+        f'rx="3" fill="{ACCENT}">'
+    )
+    lines.append(
+        f'<animate attributeName="width" values="{pr_vw}" keyTimes="{pr_kt}" '
+        f'dur="{pr_dur}" fill="freeze" calcMode="linear"/>'
+    )
+    lines.append("</rect>")
+
+    # End CTA — fade each node (group opacity is unreliable for <img> SVGs)
+    lines.append(
+        f'<rect x="0" y="0" width="{w:.0f}" height="{h:.0f}" fill="#0d1117" opacity="0">'
+        f'<animate attributeName="opacity" from="0" to="0.78" '
+        f'begin="{cta_begin:.3f}s" dur="0.45s" fill="freeze"/></rect>'
+    )
+    lines.append(
+        f'<rect x="{btn_x:.1f}" y="{btn_y:.1f}" width="{btn_w:.1f}" height="{btn_h:.1f}" '
+        f'rx="10" fill="{ACCENT}" opacity="0">{_cta_fade(cta_begin)}</rect>'
+    )
+    lines.append(
+        f'<text x="{cx:.1f}" y="{cy - 8:.1f}" fill="#ffffff" font-size="18" font-weight="700" '
+        f'text-anchor="middle" font-family="{font}" opacity="0">'
+        f"Play your profile{_cta_fade(cta_begin)}</text>"
+    )
+    lines.append(
+        f'<text x="{cx:.1f}" y="{cy + 16:.1f}" fill="#ffffff" font-size="13" '
+        f'text-anchor="middle" font-family="{font}" opacity="0">'
+        f"Click to open the game{_cta_fade(cta_begin)}</text>"
+    )
+
     lines.append("</a>")
     lines.append("</svg>")
     return "\n".join(lines) + "\n"

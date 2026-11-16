@@ -3,6 +3,8 @@ name: Generate Arkanoid
 on:
   schedule:
     - cron: "17 6 * * *"
+  push:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
