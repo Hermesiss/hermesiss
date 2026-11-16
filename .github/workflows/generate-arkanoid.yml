@@ -1,0 +1,37 @@
+name: Generate Arkanoid
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Generate arkanoid.svg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python generate-arkanoid.py -o arkanoid.svg
+      - name: Publish to arkanoid branch (single commit)
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+          # orphan branch → always exactly one commit with only the SVG
+          git checkout --orphan arkanoid-publish
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add -f arkanoid.svg
+          git commit -m "update arkanoid.svg"
+          git push origin HEAD:arkanoid --force

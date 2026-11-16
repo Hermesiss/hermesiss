@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.idea/
+.vscode/
+
+# published by CI to branch `arkanoid` (force-push, single commit)
+arkanoid.svg
+

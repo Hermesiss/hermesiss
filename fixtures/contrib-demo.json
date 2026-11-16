@@ -1,0 +1,180 @@
+{
+  "weeks": [
+    {
+      "contributionDays": [
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 0},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 1},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 2},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 3},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 4},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 5},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 0},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 1},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 2},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 3},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 4},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 5},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 0},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 1},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 2},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 3},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 4},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 5},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 0},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 1},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 2},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 3},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 4},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 5},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 0},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 1},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 2},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 3},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 4},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 5},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 0},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 1},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 2},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 3},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 4},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 5},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 0},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 1},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 2},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 3},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 4},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 5},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 0},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 1},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 2},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 3},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 4},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 5},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 0},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 1},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 2},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 3},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 4},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 5},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 0},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 1},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 2},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 3},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 4},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 5},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 0},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 1},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 2},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 3},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 4},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 5},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 0},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 1},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 2},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 3},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 4},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 5},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 0},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 1},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 2},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 3},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 4},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 5},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 0},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 1},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 2},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 3},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 4},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 5},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 0},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 1},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 2},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 3},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 4},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 5},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 6}
+      ]
+    },
+    {
+      "contributionDays": [
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 0},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 1},
+        {"contributionCount": 0, "contributionLevel": "NONE", "weekday": 2},
+        {"contributionCount": 1, "contributionLevel": "FIRST_QUARTILE", "weekday": 3},
+        {"contributionCount": 3, "contributionLevel": "THIRD_QUARTILE", "weekday": 4},
+        {"contributionCount": 2, "contributionLevel": "SECOND_QUARTILE", "weekday": 5},
+        {"contributionCount": 4, "contributionLevel": "FOURTH_QUARTILE", "weekday": 6}
+      ]
+    }
+  ]
+}
